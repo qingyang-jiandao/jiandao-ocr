@@ -52,7 +52,7 @@ OCR with the caffe  framework on windows and linux
     - If required change paths: `wight_file, deploy_file`
     - Set `test_img` to input image path
 
-## c++ for model deployment for windows and linux
+## c++ for model deployment  windows and linux
 
 1.  the source is in the cpp/uselib directory.
 
