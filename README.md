@@ -42,12 +42,12 @@ OCR with the caffe  framework on windows and linux
 
 ## Demo
 
-1.  Run `evaluators1.py` to recognize the text by train-stnpt-fnn-lossweight-vgg-64x256.prototxt.
+1.  Run `demo_stn.py` to recognize the text by train-stnpt-fnn-lossweight-vgg-64x256.prototxt.
     Note:
     - If required change paths: `wight_file, deploy_file`
     - Set `test_img` to input image path
 
-2.  Run `evaluators2.py` to recognize the text by train-stnpt-fnn-vgg-pro-stnfeature-64x256.prototxt.
+2.  Run `demo_jiandao.py` to recognize the text by train-stnpt-fnn-vgg-pro-stnfeature-64x256.prototxt.
     Note:
     - If required change paths: `wight_file, deploy_file`
     - Set `test_img` to input image path
