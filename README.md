@@ -38,7 +38,7 @@ OCR with the caffe  framework on windows and linux
 
 ## Testing 
 
-1.  The model will be tested on the testing set at the end of training.
+    The model will be tested on the testing set at the end of training.
 
 ## Demo
 
@@ -54,7 +54,7 @@ OCR with the caffe  framework on windows and linux
 
 ## c++ for model deployment on windows and linux
 
-1.  the source is in the cpp/uselib directory.
+    the source is in the cpp/uselib directory.
 
 ## Jiandao Caffe
 
