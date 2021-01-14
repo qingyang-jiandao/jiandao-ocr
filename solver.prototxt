@@ -1,0 +1,19 @@
+#net: "./model-stnpt-fnn/train-stnpt-fnn-lossweight-vgg-64x256.prototxt"
+net: "./model-jiandao/train-stnpt-fnn-vgg-pro-stnfeature-64x256.prototxt"
+
+#test_iter: 100
+#test_interval: 10000
+base_lr: 0.0001
+lr_policy: "step"
+gamma: 0.1
+stepsize: 150000
+display: 100
+max_iter: 500000
+momentum: 0.9
+weight_decay: 0.00001
+snapshot: 20000
+snapshot_prefix: "./model/stnpt-fnn"
+solver_mode: GPU
+#type: "SGD"
+type: "Adam"
+#clip_gradients: 50000

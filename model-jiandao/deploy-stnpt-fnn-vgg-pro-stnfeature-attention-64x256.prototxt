@@ -1,0 +1,5401 @@
+name: "stn_pt-fnn-vgg"
+
+input:"data"
+input_shape{
+    dim:1
+    dim:3
+    dim:32
+    dim:128
+}
+
+input: 'stn_data'
+input_shape {
+    dim:1
+    dim:3
+    dim:64
+    dim:256
+}
+
+
+###################### stn Perspective Transformation ####################
+#########iter1###########
+layer {
+    name: "resize_data"
+    type: "Interp"
+    bottom: "data"
+    top: "resize_data"
+    interp_param {
+	  height: 32
+	  width: 128
+    }
+}
+layer {
+  name: "loc_conv1"
+  type: "Convolution"
+  bottom: "resize_data"
+  top: "loc_conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 32
+    pad_h: 1
+    pad_w: 2
+    kernel_h: 3
+    kernel_w: 5
+    stride: 1
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "loc_conv1"
+  top: "loc_conv1"
+  name: "loc_conv1_relu"
+  type: "ReLU"
+}
+layer {
+  name: "loc_pool1"
+  type: "Pooling"
+  bottom: "loc_conv1"
+  top: "loc_pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "loc_conv2"
+  type: "Convolution"
+  bottom: "loc_pool1"
+  top: "loc_conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    pad_h: 1
+    pad_w: 2
+    kernel_h: 3
+    kernel_w: 5
+    stride: 1
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "loc_conv2"
+  top: "loc_conv2"
+  name: "loc_conv2_relu"
+  type: "ReLU"
+}
+layer {
+  name: "loc_pool2"
+  type: "Pooling"
+  bottom: "loc_conv2"
+  top: "loc_pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "loc_conv3"
+  type: "Convolution"
+  bottom: "loc_pool2"
+  top: "loc_conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 128
+    pad_h: 1
+    pad_w: 2
+    kernel_h: 3
+    kernel_w: 5
+    stride: 1
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "loc_conv3"
+  top: "loc_conv3"
+  name: "loc_conv3_relu"
+  type: "ReLU"
+}
+layer {
+  name: "loc_pool3"
+  type: "Pooling"
+  bottom: "loc_conv3"
+  top: "loc_pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "loc_conv4"
+  type: "Convolution"
+  bottom: "loc_pool3"
+  top: "loc_conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad_h: 1
+    pad_w: 2
+    kernel_h: 3
+    kernel_w: 5
+    stride: 1
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "loc_conv4"
+  top: "loc_conv4"
+  name: "loc_conv4_relu"
+  type: "ReLU"
+}
+layer {
+  name: "loc_pool4"
+  type: "Pooling"
+  bottom: "loc_conv4"
+  top: "loc_pool4"
+  pooling_param {
+    pool: MAX
+    kernel_w: 2
+    kernel_h: 2
+    stride_w: 2
+    stride_h: 2
+    pad_h:0
+    pad_w:0
+  }
+}
+layer {
+  name: "loc_conv5"
+  type: "Convolution"
+  bottom: "loc_pool4"
+  top: "loc_conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+	pad_h: 1
+    pad_w: 1
+    kernel_h: 3
+    kernel_w: 3
+    stride_h: 1
+    stride_w: 2
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "loc_conv5"
+  top: "loc_conv5"
+  name: "loc_conv5_relu"
+  type: "ReLU"
+}
+layer {
+  name: "loc_conv6"
+  type: "Convolution"
+  bottom: "loc_conv5"
+  top: "loc_conv6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad_h: 1
+    pad_w: 1
+    kernel_h: 3
+    kernel_w: 3
+    stride_h: 1
+    stride_w: 2
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "loc_conv6"
+  top: "loc_conv6"
+  name: "loc_conv6_relu"
+  type: "ReLU"
+}
+layer {
+  name: "loc_ip1"
+  type: "InnerProduct"
+  bottom: "loc_conv6"
+  top: "loc_ip1"
+  inner_product_param {
+    num_output: 1024
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "loc_ip1"
+  top: "loc_ip1"
+  name: "loc_ip1_relu"
+  type: "ReLU"
+}
+layer {
+  name: "loc_ip2"
+  type: "InnerProduct"
+  bottom: "loc_ip1"
+  top: "loc_ip2"
+  inner_product_param {
+    num_output: 256
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  name: "loc_ip2_relu"
+  type: "ReLU"
+  bottom: "loc_ip2"
+  top: "loc_ip2"
+}
+layer {
+  name: "st/theta"
+  type: "InnerProduct"
+  bottom: "loc_ip2"
+  top: "st/theta"
+  inner_product_param {
+    num_output: 9
+    weight_filler {
+      type: "constant"
+      value: 0
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "st/st_layer"
+  type: "SpatialTransformerPT"
+  bottom: "stn_data"
+  bottom: "st/theta"
+  top: "st/st_output"
+  st_param {
+    to_compute_dU: false
+	#theta_3_3: 1
+  }
+}
+###################### fnn ####################
+layer {
+  name: "seg_conv1"
+  type: "Convolution"
+  bottom: "st/st_output"
+  top: "seg_conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "seg_conv1"
+  top: "seg_conv1"
+  name: "bn_seg_conv1"
+  type: "BatchNorm"
+  batch_norm_param {
+	use_global_stats: true
+	eps: 1e-05
+  }
+}
+layer {
+  bottom: "seg_conv1"
+  top: "seg_conv1"
+  name: "scale_seg_conv1"
+  type: "Scale"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  bottom: "seg_conv1"
+  top: "seg_conv1"
+  name: "seg_conv1_relu"
+  type: "ReLU"
+}
+layer {
+  name: "seg_conv2"
+  type: "Convolution"
+  bottom: "seg_conv1"
+  top: "seg_conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "seg_conv2"
+  top: "seg_conv2"
+  name: "bn_seg_conv2"
+  type: "BatchNorm"
+  batch_norm_param {
+    use_global_stats: true
+	eps: 1e-05
+  }
+}
+layer {
+  bottom: "seg_conv2"
+  top: "seg_conv2"
+  name: "scale_seg_conv2"
+  type: "Scale"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  bottom: "seg_conv2"
+  top: "seg_conv2"
+  name: "seg_conv2_relu"
+  type: "ReLU"
+}
+layer {
+  name: "seg_pool1"
+  type: "Pooling"
+  bottom: "seg_conv2"
+  top: "seg_pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "seg_conv3"
+  type: "Convolution"
+  bottom: "seg_pool1"
+  top: "seg_conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "seg_conv3"
+  top: "seg_conv3"
+  name: "bn_seg_conv3"
+  type: "BatchNorm"
+  batch_norm_param {
+    use_global_stats: true
+	eps: 1e-05
+  }
+}
+layer {
+  bottom: "seg_conv3"
+  top: "seg_conv3"
+  name: "scale_seg_conv3"
+  type: "Scale"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
+  bottom: "seg_conv3"
+  top: "seg_conv3"
+  name: "seg_conv3_relu"
+  type: "ReLU"
+}
+
+#########iter2###########
+layer {
+    name: "resize_st_output"
+    type: "Interp"
+    bottom: "st/st_output"
+    top: "resize_st_output"
+    interp_param {
+	  height: 32
+	  width: 128
+    }
+}
+layer {
+  name: "iter2_loc_conv1"
+  type: "Convolution"
+  bottom: "resize_st_output"
+  top: "iter2_loc_conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 32
+    pad_h: 1
+    pad_w: 2
+    kernel_h: 3
+    kernel_w: 5
+    stride: 1
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "iter2_loc_conv1"
+  top: "iter2_loc_conv1"
+  name: "iter2_loc_conv1_relu"
+  type: "ReLU"
+}
+layer {
+  name: "iter2_loc_pool1"
+  type: "Pooling"
+  bottom: "iter2_loc_conv1"
+  top: "iter2_loc_pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "iter2_loc_conv2"
+  type: "Convolution"
+  bottom: "iter2_loc_pool1"
+  top: "iter2_loc_conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    pad_h: 1
+    pad_w: 2
+    kernel_h: 3
+    kernel_w: 5
+    stride: 1
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "iter2_loc_conv2"
+  top: "iter2_loc_conv2"
+  name: "iter2_loc_conv2_relu"
+  type: "ReLU"
+}
+layer {
+  name: "iter2_loc_pool2"
+  type: "Pooling"
+  bottom: "iter2_loc_conv2"
+  top: "iter2_loc_pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "iter2_loc_conv3"
+  type: "Convolution"
+  bottom: "iter2_loc_pool2"
+  top: "iter2_loc_conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 128
+    pad_h: 1
+    pad_w: 2
+    kernel_h: 3
+    kernel_w: 5
+    stride: 1
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "iter2_loc_conv3"
+  top: "iter2_loc_conv3"
+  name: "iter2_loc_conv3_relu"
+  type: "ReLU"
+}
+layer {
+  name: "iter2_loc_pool3"
+  type: "Pooling"
+  bottom: "iter2_loc_conv3"
+  top: "iter2_loc_pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "iter2_loc_conv4"
+  type: "Convolution"
+  bottom: "iter2_loc_pool3"
+  top: "iter2_loc_conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad_h: 1
+    pad_w: 2
+    kernel_h: 3
+    kernel_w: 5
+    stride: 1
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "iter2_loc_conv4"
+  top: "iter2_loc_conv4"
+  name: "iter2_loc_conv4_relu"
+  type: "ReLU"
+}
+layer {
+  name: "iter2_loc_pool4"
+  type: "Pooling"
+  bottom: "iter2_loc_conv4"
+  top: "iter2_loc_pool4"
+  pooling_param {
+    pool: MAX
+    kernel_w: 2
+    kernel_h: 2
+    stride_w: 2
+    stride_h: 2
+    pad_h:0
+    pad_w:0
+  }
+}
+layer {
+  name: "iter2_loc_conv5"
+  type: "Convolution"
+  bottom: "iter2_loc_pool4"
+  top: "iter2_loc_conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 512
+	pad_h: 1
+    pad_w: 1
+    kernel_h: 3
+    kernel_w: 3
+    stride_h: 1
+    stride_w: 2
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "iter2_loc_conv5"
+  top: "iter2_loc_conv5"
+  name: "iter2_loc_conv5_relu"
+  type: "ReLU"
+}
+layer {
+  name: "iter2_loc_conv6"
+  type: "Convolution"
+  bottom: "iter2_loc_conv5"
+  top: "iter2_loc_conv6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad_h: 1
+    pad_w: 1
+    kernel_h: 3
+    kernel_w: 3
+    stride_h: 1
+    stride_w: 2
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "iter2_loc_conv6"
+  top: "iter2_loc_conv6"
+  name: "iter2_loc_conv6_relu"
+  type: "ReLU"
+}
+layer {
+  name: "iter2_loc_ip1"
+  type: "InnerProduct"
+  bottom: "iter2_loc_conv6"
+  top: "iter2_loc_ip1"
+  inner_product_param {
+    num_output: 1024
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  bottom: "iter2_loc_ip1"
+  top: "iter2_loc_ip1"
+  name: "iter2_loc_ip1_relu"
+  type: "ReLU"
+}
+layer {
+  name: "iter2_loc_ip2"
+  type: "InnerProduct"
+  bottom: "iter2_loc_ip1"
+  top: "iter2_loc_ip2"
+  inner_product_param {
+    num_output: 256
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  name: "iter2_loc_ip2_relu"
+  type: "ReLU"
+  bottom: "iter2_loc_ip2"
+  top: "iter2_loc_ip2"
+}
+layer {
+  name: "iter2_st/theta"
+  type: "InnerProduct"
+  bottom: "iter2_loc_ip2"
+  top: "iter2_st/theta"
+  inner_product_param {
+    num_output: 9
+    weight_filler {
+      type: "constant"
+      value: 0
+    }
+    bias_filler {
+      type: "file"
+      file: "bias_init_pt.txt"
+    }
+  }
+}
+
+layer {
+  name: "iter2_st_seg_conv3"
+  type: "SpatialTransformerPT"
+  bottom: "seg_conv3"
+  bottom: "iter2_st/theta"
+  top: "iter2_st_seg_conv3"
+  st_param {
+    to_compute_dU: true
+  }
+}
+layer {
+  name: "iter2_seg_conv3"
+  type: "Convolution"
+  bottom: "iter2_st_seg_conv3"
+  top: "iter2_seg_conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+  name: "iter2_seg_conv3_relu"
+  type: "ReLU"
+  bottom: "iter2_seg_conv3"
+  top: "iter2_seg_conv3"
+}
+layer {
+  name: "iter2_seg_conv3_c3"
+  type: "Convolution"
+  bottom: "iter2_seg_conv3"
+  top: "iter2_seg_conv3_c3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+layer {
+    name: "resize_iter2_seg_conv3_c3"
+    type: "Interp"
+    bottom: "iter2_seg_conv3_c3"
+	bottom: "st/st_output"
+    top: "resize_iter2_seg_conv3_c3"
+}
+layer {
+  name: "iter2_st_output"
+  type: "Convolution"
+  bottom: "resize_iter2_seg_conv3_c3"
+  top: "iter2_st_output"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 1
+    pad: 1
+    kernel_size: 3
+	weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+	  value: 0
+    }
+  }
+}
+
+###################### Entry ####################
+layer {
+    name: "interp_iter2_st_seg_output"
+    type: "Interp"
+    bottom: "iter2_st_output"
+    top: "interp_iter2_st_seg_output"
+    interp_param {
+	  #scale_factor_h: 0.5
+	  #scale_factor_w: 1.0
+	  height: 32
+	  width: 384
+    }
+}
+layer {
+  name: "conv0"
+  type: "Convolution"
+  bottom: "interp_iter2_st_seg_output"
+  top: "conv0"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.02
+    }
+  }
+}
+layer {
+  name: "relu0"
+  type: "ReLU"
+  bottom: "conv0"
+  top: "conv0"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv0"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv1"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.02
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv1"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv2"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.02
+    }
+  }
+}
+layer {
+  name: "bn2"
+  type: "BatchNorm"
+  bottom: "conv2"
+  top: "conv2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  param {
+    lr_mult: 0
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "conv2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.02
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_w: 2
+    kernel_h: 2
+    stride_w: 2
+    stride_h: 2
+    pad_h:0
+    pad_w:0
+  }
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "pool3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.02
+    }
+  }
+}
+layer {
+  name: "bn4"
+  type: "BatchNorm"
+  bottom: "conv4"
+  top: "conv4"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  param {
+    lr_mult: 0
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+} 
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.02
+    }
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+    name: "pool4"
+    type: "Convolution"
+    bottom: "conv5"
+    top: "pool4"
+    convolution_param {
+        num_output: 512
+        pad_h: 1
+        pad_w: 1
+        kernel_h: 3
+        kernel_w: 3
+		stride_h: 2
+		stride_w: 1
+        group: 1
+        dilation: 1
+        bias_term: false
+        weight_filler {
+            type: "msra"
+        }
+    }
+    param {
+        decay_mult: 1
+        lr_mult: 1
+    }
+}
+layer {
+  name: "conv6"
+  type: "Convolution"
+  bottom: "pool4"
+  top: "conv6"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 512
+	kernel_w: 1
+	kernel_h: 2
+	stride_w: 1
+	stride_h: 1
+	pad_h:0
+	pad_w:0
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.02
+    }
+  }
+}
+layer {
+    name: "bn6"
+    type: "BatchNorm"
+    bottom: "conv6"
+    top: "conv6"
+    param {
+      lr_mult: 1
+    }
+    param {
+      lr_mult: 2
+    }
+    param {
+      lr_mult: 0
+    }
+}
+layer {
+    name: "relu6"
+    type: "ReLU"
+    bottom: "conv6"
+    top: "conv6"
+}
+#======bilstm===================
+layer {
+    name: "permuted_data"
+    type: "Transpose"
+    bottom: "conv6"
+    top: "permuted_data"
+    transpose_param {
+        dim: 3
+        dim: 0
+        dim: 2
+        dim: 1
+    }
+}
+layer {
+    name: "lstm_input"
+    type: "Reshape"
+    bottom: "permuted_data"
+    top: "lstm_input"
+    reshape_param {
+        shape { dim: -1 }
+        axis: 2
+        num_axes: 2 
+    }
+}
+layer {
+    name: "lstm"
+    type: "Lstm"
+    bottom: "lstm_input"
+    top: "lstm"
+    lstm_param {
+        num_output: 256
+        weight_filler {
+          type: "gaussian"
+          std: 0.01
+        }
+        bias_filler {
+          type: "constant"
+		  value: 0
+        }
+        clipping_threshold: 1
+    }
+}
+layer {
+  name: "lstm-reverse1"
+  type: "Reverse"
+  bottom: "lstm_input"
+  top: "rlstm_input"
+  reverse_param {
+    axis: 0
+  }
+}
+layer {
+  name: "rlstm"
+  type: "Lstm"
+  bottom: "rlstm_input"
+  top: "rlstm-output"
+  lstm_param {
+    num_output: 256
+   }
+}
+layer {
+  name: "lstm-reverse2"
+  type: "Reverse"
+  bottom: "rlstm-output"
+  top: "rlstm"
+  reverse_param {
+    axis: 0
+  }
+}
+
+# merge lstm and rlstm
+layer {
+  name: "merge_lstm_rlstm"
+  type: "Concat"
+  bottom: "lstm"
+  bottom: "rlstm"
+  top: "merge_lstm_rlstm"
+  concat_param {
+    axis: 2
+  }
+}
+
+#######deoce lstm #######################
+
+layer {
+    name: "encoder_features"
+    type: "Transpose"
+    bottom: "merge_lstm_rlstm"
+    top: "encoder_features"
+    transpose_param {
+        dim: 1
+        dim: 0
+        dim: 2
+    }
+}
+layer {
+  name: "xProj"
+  type: "InnerProduct"
+  bottom: "encoder_features"
+  top: "xProj"
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_hidden_prev"
+  type: "DummyData"
+  top: "lstm1_hidden_prev"
+  dummy_data_param {
+    shape {
+      dim: 1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "lstm1_mem_cell_prev"
+  type: "DummyData"
+  top: "lstm1_mem_cell_prev"
+  dummy_data_param {
+    shape {
+      dim: 1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "input_prev"
+  type: "DummyData"
+  top: "input_prev"
+  dummy_data_param {
+    shape {
+      dim: 1
+      dim: 1
+    }
+	data_filler {
+      type: "constant"
+      value: 6863
+    }
+  }
+}
+layer {
+  name: "embedding_0"
+  type: "Embed"
+  bottom: "input_prev"
+  top: "embedding_0"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false 
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_0"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden_prev"
+  top: "hidden_att_0"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_0"
+  type: "Tile"
+  bottom: "hidden_att_0"
+  top: "tile_hidden_att_0"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_0"
+  type: "Reshape"
+  bottom: "tile_hidden_att_0"
+  top: "tile_hidden_reshape_0"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_0"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_0"
+  top: "sum_hidden_att_0"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_0"
+  type: "TanH"
+  bottom: "sum_hidden_att_0"
+  top: "sum_hidden_att_0"
+}
+layer {
+  name: "predict_att_0"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_0"
+  top: "predict_att_0"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_0"
+  type: "Reshape"
+  bottom: "predict_att_0"
+  top: "reshape_predict_att_0"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_0"
+  type: "Softmax"
+  bottom: "reshape_predict_att_0"
+  
+  top: "att_weight_0"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_0"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_0"
+  top: "att_product_0"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_0"
+  type: "Permute"
+  bottom: "att_product_0"
+  top: "permute_att_0"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_0"
+  type: "Reduction"
+  bottom: "permute_att_0"
+  top: "context_0"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t0"
+  type: "Concat"
+  bottom: "context_0"
+  bottom: "embedding_0"
+  top: "concat1_t0"
+}
+layer {
+  name: "lstm2"
+  type: "LSTMNode"
+  bottom: "concat1_t0"
+  bottom: "lstm1_mem_cell_prev"
+  top: "lstm1_hidden0"
+  top: "lstm1_mem_cell0"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: false
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden0"
+  top: "predict"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob"
+    type: "Softmax"
+    bottom: "predict"
+    top: "prob"
+}
+layer {
+  name: "input_1"
+  type: "ArgMax"
+  bottom: "prob"
+  top: "input_1"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_1"
+  type: "Embed"
+  bottom: "input_1"
+  top: "embedding_1"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_1"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden0"
+  top: "hidden_att_1"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_1"
+  type: "Tile"
+  bottom: "hidden_att_1"
+  top: "tile_hidden_att_1"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_1"
+  type: "Reshape"
+  bottom: "tile_hidden_att_1"
+  top: "tile_hidden_reshape_1"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_1"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_1"
+  top: "sum_hidden_att_1"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_1"
+  type: "TanH"
+  bottom: "sum_hidden_att_1"
+  top: "sum_hidden_att_1"
+}
+layer {
+  name: "predict_att_1"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_1"
+  top: "predict_att_1"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_1"
+  type: "Reshape"
+  bottom: "predict_att_1"
+  top: "reshape_predict_att_1"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_1"
+  type: "Softmax"
+  bottom: "reshape_predict_att_1"
+  
+  top: "att_weight_1"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_1"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_1"
+  top: "att_product_1"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_1"
+  type: "Permute"
+  bottom: "att_product_1"
+  top: "permute_att_1"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_1"
+  type: "Reduction"
+  bottom: "permute_att_1"
+  top: "context_1"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t1"
+  type: "Concat"
+  bottom: "context_1"
+  bottom: "embedding_1"
+  top: "concat1_t1"
+}
+layer {
+  name: "lstm2_t1"
+  type: "LSTMNode"
+  bottom: "concat1_t1"
+  bottom: "lstm1_mem_cell0"
+  top: "lstm1_hidden1"
+  top: "lstm1_mem_cell1"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_1"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden1"
+  top: "predict_1"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_1"
+    type: "Softmax"
+    bottom: "predict_1"
+    top: "prob_1"
+}
+layer {
+  name: "input_2"
+  type: "ArgMax"
+  bottom: "prob_1"
+  top: "input_2"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_2"
+  type: "Embed"
+  bottom: "input_2"
+  top: "embedding_2"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_2"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden1"
+  top: "hidden_att_2"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_2"
+  type: "Tile"
+  bottom: "hidden_att_2"
+  top: "tile_hidden_att_2"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_2"
+  type: "Reshape"
+  bottom: "tile_hidden_att_2"
+  top: "tile_hidden_reshape_2"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_2"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_2"
+  top: "sum_hidden_att_2"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_2"
+  type: "TanH"
+  bottom: "sum_hidden_att_2"
+  top: "sum_hidden_att_2"
+}
+layer {
+  name: "predict_att_2"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_2"
+  top: "predict_att_2"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_2"
+  type: "Reshape"
+  bottom: "predict_att_2"
+  top: "reshape_predict_att_2"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_2"
+  type: "Softmax"
+  bottom: "reshape_predict_att_2"
+  
+  top: "att_weight_2"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_2"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_2"
+  top: "att_product_2"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_2"
+  type: "Permute"
+  bottom: "att_product_2"
+  top: "permute_att_2"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_2"
+  type: "Reduction"
+  bottom: "permute_att_2"
+  top: "context_2"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t2"
+  type: "Concat"
+  bottom: "context_2"
+  bottom: "embedding_2"
+  top: "concat1_t2"
+}
+layer {
+  name: "lstm2_t2"
+  type: "LSTMNode"
+  bottom: "concat1_t2"
+  bottom: "lstm1_mem_cell1"
+  top: "lstm1_hidden2"
+  top: "lstm1_mem_cell2"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_2"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden2"
+  top: "predict_2"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_2"
+    type: "Softmax"
+    bottom: "predict_2"
+    top: "prob_2"
+}
+layer {
+  name: "input_3"
+  type: "ArgMax"
+  bottom: "prob_2"
+  top: "input_3"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_3"
+  type: "Embed"
+  bottom: "input_3"
+  top: "embedding_3"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_3"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden2"
+  top: "hidden_att_3"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_3"
+  type: "Tile"
+  bottom: "hidden_att_3"
+  top: "tile_hidden_att_3"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_3"
+  type: "Reshape"
+  bottom: "tile_hidden_att_3"
+  top: "tile_hidden_reshape_3"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_3"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_3"
+  top: "sum_hidden_att_3"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_3"
+  type: "TanH"
+  bottom: "sum_hidden_att_3"
+  top: "sum_hidden_att_3"
+}
+layer {
+  name: "predict_att_3"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_3"
+  top: "predict_att_3"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_3"
+  type: "Reshape"
+  bottom: "predict_att_3"
+  top: "reshape_predict_att_3"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_3"
+  type: "Softmax"
+  bottom: "reshape_predict_att_3"
+  
+  top: "att_weight_3"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_3"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_3"
+  top: "att_product_3"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_3"
+  type: "Permute"
+  bottom: "att_product_3"
+  top: "permute_att_3"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_3"
+  type: "Reduction"
+  bottom: "permute_att_3"
+  top: "context_3"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t3"
+  type: "Concat"
+  bottom: "context_3"
+  bottom: "embedding_3"
+  top: "concat1_t3"
+}
+layer {
+  name: "lstm2_t3"
+  type: "LSTMNode"
+  bottom: "concat1_t3"
+  bottom: "lstm1_mem_cell2"
+  top: "lstm1_hidden3"
+  top: "lstm1_mem_cell3"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_3"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden3"
+  top: "predict_3"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_3"
+    type: "Softmax"
+    bottom: "predict_3"
+    top: "prob_3"
+}
+layer {
+  name: "input_4"
+  type: "ArgMax"
+  bottom: "prob_3"
+  top: "input_4"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_4"
+  type: "Embed"
+  bottom: "input_4"
+  top: "embedding_4"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_4"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden3"
+  top: "hidden_att_4"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_4"
+  type: "Tile"
+  bottom: "hidden_att_4"
+  top: "tile_hidden_att_4"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_4"
+  type: "Reshape"
+  bottom: "tile_hidden_att_4"
+  top: "tile_hidden_reshape_4"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_4"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_4"
+  top: "sum_hidden_att_4"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_4"
+  type: "TanH"
+  bottom: "sum_hidden_att_4"
+  top: "sum_hidden_att_4"
+}
+layer {
+  name: "predict_att_4"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_4"
+  top: "predict_att_4"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_4"
+  type: "Reshape"
+  bottom: "predict_att_4"
+  top: "reshape_predict_att_4"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_4"
+  type: "Softmax"
+  bottom: "reshape_predict_att_4"
+  
+  top: "att_weight_4"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_4"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_4"
+  top: "att_product_4"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_4"
+  type: "Permute"
+  bottom: "att_product_4"
+  top: "permute_att_4"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_4"
+  type: "Reduction"
+  bottom: "permute_att_4"
+  top: "context_4"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t4"
+  type: "Concat"
+  bottom: "context_4"
+  bottom: "embedding_4"
+  top: "concat1_t4"
+}
+layer {
+  name: "lstm2_t4"
+  type: "LSTMNode"
+  bottom: "concat1_t4"
+  bottom: "lstm1_mem_cell3"
+  top: "lstm1_hidden4"
+  top: "lstm1_mem_cell4"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_4"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden4"
+  top: "predict_4"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_4"
+    type: "Softmax"
+    bottom: "predict_4"
+    top: "prob_4"
+}
+layer {
+  name: "input_5"
+  type: "ArgMax"
+  bottom: "prob_4"
+  top: "input_5"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_5"
+  type: "Embed"
+  bottom: "input_5"
+  top: "embedding_5"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_5"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden4"
+  top: "hidden_att_5"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_5"
+  type: "Tile"
+  bottom: "hidden_att_5"
+  top: "tile_hidden_att_5"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_5"
+  type: "Reshape"
+  bottom: "tile_hidden_att_5"
+  top: "tile_hidden_reshape_5"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_5"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_5"
+  top: "sum_hidden_att_5"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_5"
+  type: "TanH"
+  bottom: "sum_hidden_att_5"
+  top: "sum_hidden_att_5"
+}
+layer {
+  name: "predict_att_5"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_5"
+  top: "predict_att_5"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_5"
+  type: "Reshape"
+  bottom: "predict_att_5"
+  top: "reshape_predict_att_5"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_5"
+  type: "Softmax"
+  bottom: "reshape_predict_att_5"
+  
+  top: "att_weight_5"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_5"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_5"
+  top: "att_product_5"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_5"
+  type: "Permute"
+  bottom: "att_product_5"
+  top: "permute_att_5"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_5"
+  type: "Reduction"
+  bottom: "permute_att_5"
+  top: "context_5"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t5"
+  type: "Concat"
+  bottom: "context_5"
+  bottom: "embedding_5"
+  top: "concat1_t5"
+}
+layer {
+  name: "lstm2_t5"
+  type: "LSTMNode"
+  bottom: "concat1_t5"
+  bottom: "lstm1_mem_cell4"
+  top: "lstm1_hidden5"
+  top: "lstm1_mem_cell5"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_5"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden5"
+  top: "predict_5"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_5"
+    type: "Softmax"
+    bottom: "predict_5"
+    top: "prob_5"
+}
+layer {
+  name: "input_6"
+  type: "ArgMax"
+  bottom: "prob_5"
+  top: "input_6"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_6"
+  type: "Embed"
+  bottom: "input_6"
+  top: "embedding_6"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_6"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden5"
+  top: "hidden_att_6"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_6"
+  type: "Tile"
+  bottom: "hidden_att_6"
+  top: "tile_hidden_att_6"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_6"
+  type: "Reshape"
+  bottom: "tile_hidden_att_6"
+  top: "tile_hidden_reshape_6"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_6"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_6"
+  top: "sum_hidden_att_6"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_6"
+  type: "TanH"
+  bottom: "sum_hidden_att_6"
+  top: "sum_hidden_att_6"
+}
+layer {
+  name: "predict_att_6"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_6"
+  top: "predict_att_6"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_6"
+  type: "Reshape"
+  bottom: "predict_att_6"
+  top: "reshape_predict_att_6"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_6"
+  type: "Softmax"
+  bottom: "reshape_predict_att_6"
+  
+  top: "att_weight_6"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_6"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_6"
+  top: "att_product_6"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_6"
+  type: "Permute"
+  bottom: "att_product_6"
+  top: "permute_att_6"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_6"
+  type: "Reduction"
+  bottom: "permute_att_6"
+  top: "context_6"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t6"
+  type: "Concat"
+  bottom: "context_6"
+  bottom: "embedding_6"
+  top: "concat1_t6"
+}
+layer {
+  name: "lstm2_t6"
+  type: "LSTMNode"
+  bottom: "concat1_t6"
+  bottom: "lstm1_mem_cell5"
+  top: "lstm1_hidden6"
+  top: "lstm1_mem_cell6"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_6"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden6"
+  top: "predict_6"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_6"
+    type: "Softmax"
+    bottom: "predict_6"
+    top: "prob_6"
+}
+layer {
+  name: "input_7"
+  type: "ArgMax"
+  bottom: "prob_6"
+  top: "input_7"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_7"
+  type: "Embed"
+  bottom: "input_7"
+  top: "embedding_7"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_7"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden6"
+  top: "hidden_att_7"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_7"
+  type: "Tile"
+  bottom: "hidden_att_7"
+  top: "tile_hidden_att_7"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_7"
+  type: "Reshape"
+  bottom: "tile_hidden_att_7"
+  top: "tile_hidden_reshape_7"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_7"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_7"
+  top: "sum_hidden_att_7"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_7"
+  type: "TanH"
+  bottom: "sum_hidden_att_7"
+  top: "sum_hidden_att_7"
+}
+layer {
+  name: "predict_att_7"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_7"
+  top: "predict_att_7"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_7"
+  type: "Reshape"
+  bottom: "predict_att_7"
+  top: "reshape_predict_att_7"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_7"
+  type: "Softmax"
+  bottom: "reshape_predict_att_7"
+  
+  top: "att_weight_7"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_7"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_7"
+  top: "att_product_7"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_7"
+  type: "Permute"
+  bottom: "att_product_7"
+  top: "permute_att_7"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_7"
+  type: "Reduction"
+  bottom: "permute_att_7"
+  top: "context_7"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t7"
+  type: "Concat"
+  bottom: "context_7"
+  bottom: "embedding_7"
+  top: "concat1_t7"
+}
+layer {
+  name: "lstm2_t7"
+  type: "LSTMNode"
+  bottom: "concat1_t7"
+  bottom: "lstm1_mem_cell6"
+  top: "lstm1_hidden7"
+  top: "lstm1_mem_cell7"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_7"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden7"
+  top: "predict_7"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_7"
+    type: "Softmax"
+    bottom: "predict_7"
+    top: "prob_7"
+}
+layer {
+  name: "input_8"
+  type: "ArgMax"
+  bottom: "prob_7"
+  top: "input_8"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_8"
+  type: "Embed"
+  bottom: "input_8"
+  top: "embedding_8"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_8"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden7"
+  top: "hidden_att_8"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_8"
+  type: "Tile"
+  bottom: "hidden_att_8"
+  top: "tile_hidden_att_8"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_8"
+  type: "Reshape"
+  bottom: "tile_hidden_att_8"
+  top: "tile_hidden_reshape_8"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_8"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_8"
+  top: "sum_hidden_att_8"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_8"
+  type: "TanH"
+  bottom: "sum_hidden_att_8"
+  top: "sum_hidden_att_8"
+}
+layer {
+  name: "predict_att_8"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_8"
+  top: "predict_att_8"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_8"
+  type: "Reshape"
+  bottom: "predict_att_8"
+  top: "reshape_predict_att_8"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_8"
+  type: "Softmax"
+  bottom: "reshape_predict_att_8"
+  
+  top: "att_weight_8"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_8"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_8"
+  top: "att_product_8"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_8"
+  type: "Permute"
+  bottom: "att_product_8"
+  top: "permute_att_8"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_8"
+  type: "Reduction"
+  bottom: "permute_att_8"
+  top: "context_8"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t8"
+  type: "Concat"
+  bottom: "context_8"
+  bottom: "embedding_8"
+  top: "concat1_t8"
+}
+layer {
+  name: "lstm2_t8"
+  type: "LSTMNode"
+  bottom: "concat1_t8"
+  bottom: "lstm1_mem_cell7"
+  top: "lstm1_hidden8"
+  top: "lstm1_mem_cell8"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_8"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden8"
+  top: "predict_8"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_8"
+    type: "Softmax"
+    bottom: "predict_8"
+    top: "prob_8"
+}
+layer {
+  name: "input_9"
+  type: "ArgMax"
+  bottom: "prob_8"
+  top: "input_9"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_9"
+  type: "Embed"
+  bottom: "input_9"
+  top: "embedding_9"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_9"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden8"
+  top: "hidden_att_9"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_9"
+  type: "Tile"
+  bottom: "hidden_att_9"
+  top: "tile_hidden_att_9"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_9"
+  type: "Reshape"
+  bottom: "tile_hidden_att_9"
+  top: "tile_hidden_reshape_9"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_9"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_9"
+  top: "sum_hidden_att_9"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_9"
+  type: "TanH"
+  bottom: "sum_hidden_att_9"
+  top: "sum_hidden_att_9"
+}
+layer {
+  name: "predict_att_9"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_9"
+  top: "predict_att_9"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_9"
+  type: "Reshape"
+  bottom: "predict_att_9"
+  top: "reshape_predict_att_9"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_9"
+  type: "Softmax"
+  bottom: "reshape_predict_att_9"
+  
+  top: "att_weight_9"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_9"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_9"
+  top: "att_product_9"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_9"
+  type: "Permute"
+  bottom: "att_product_9"
+  top: "permute_att_9"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_9"
+  type: "Reduction"
+  bottom: "permute_att_9"
+  top: "context_9"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t9"
+  type: "Concat"
+  bottom: "context_9"
+  bottom: "embedding_9"
+  top: "concat1_t9"
+}
+layer {
+  name: "lstm2_t9"
+  type: "LSTMNode"
+  bottom: "concat1_t9"
+  bottom: "lstm1_mem_cell8"
+  top: "lstm1_hidden9"
+  top: "lstm1_mem_cell9"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_9"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden9"
+  top: "predict_9"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_9"
+    type: "Softmax"
+    bottom: "predict_9"
+    top: "prob_9"
+}
+layer {
+  name: "input_10"
+  type: "ArgMax"
+  bottom: "prob_9"
+  top: "input_10"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_10"
+  type: "Embed"
+  bottom: "input_10"
+  top: "embedding_10"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_10"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden9"
+  top: "hidden_att_10"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_10"
+  type: "Tile"
+  bottom: "hidden_att_10"
+  top: "tile_hidden_att_10"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_10"
+  type: "Reshape"
+  bottom: "tile_hidden_att_10"
+  top: "tile_hidden_reshape_10"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_10"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_10"
+  top: "sum_hidden_att_10"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_10"
+  type: "TanH"
+  bottom: "sum_hidden_att_10"
+  top: "sum_hidden_att_10"
+}
+layer {
+  name: "predict_att_10"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_10"
+  top: "predict_att_10"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_10"
+  type: "Reshape"
+  bottom: "predict_att_10"
+  top: "reshape_predict_att_10"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_10"
+  type: "Softmax"
+  bottom: "reshape_predict_att_10"
+  
+  top: "att_weight_10"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_10"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_10"
+  top: "att_product_10"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_10"
+  type: "Permute"
+  bottom: "att_product_10"
+  top: "permute_att_10"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_10"
+  type: "Reduction"
+  bottom: "permute_att_10"
+  top: "context_10"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t10"
+  type: "Concat"
+  bottom: "context_10"
+  bottom: "embedding_10"
+  top: "concat1_t10"
+}
+layer {
+  name: "lstm2_t10"
+  type: "LSTMNode"
+  bottom: "concat1_t10"
+  bottom: "lstm1_mem_cell9"
+  top: "lstm1_hidden10"
+  top: "lstm1_mem_cell10"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_10"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden10"
+  top: "predict_10"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_10"
+    type: "Softmax"
+    bottom: "predict_10"
+    top: "prob_10"
+}
+layer {
+  name: "input_11"
+  type: "ArgMax"
+  bottom: "prob_10"
+  top: "input_11"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_11"
+  type: "Embed"
+  bottom: "input_11"
+  top: "embedding_11"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_11"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden10"
+  top: "hidden_att_11"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_11"
+  type: "Tile"
+  bottom: "hidden_att_11"
+  top: "tile_hidden_att_11"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_11"
+  type: "Reshape"
+  bottom: "tile_hidden_att_11"
+  top: "tile_hidden_reshape_11"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_11"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_11"
+  top: "sum_hidden_att_11"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_11"
+  type: "TanH"
+  bottom: "sum_hidden_att_11"
+  top: "sum_hidden_att_11"
+}
+layer {
+  name: "predict_att_11"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_11"
+  top: "predict_att_11"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_11"
+  type: "Reshape"
+  bottom: "predict_att_11"
+  top: "reshape_predict_att_11"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_11"
+  type: "Softmax"
+  bottom: "reshape_predict_att_11"
+  
+  top: "att_weight_11"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_11"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_11"
+  top: "att_product_11"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_11"
+  type: "Permute"
+  bottom: "att_product_11"
+  top: "permute_att_11"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_11"
+  type: "Reduction"
+  bottom: "permute_att_11"
+  top: "context_11"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t11"
+  type: "Concat"
+  bottom: "context_11"
+  bottom: "embedding_11"
+  top: "concat1_t11"
+}
+layer {
+  name: "lstm2_t11"
+  type: "LSTMNode"
+  bottom: "concat1_t11"
+  bottom: "lstm1_mem_cell10"
+  top: "lstm1_hidden11"
+  top: "lstm1_mem_cell11"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_11"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden11"
+  top: "predict_11"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_11"
+    type: "Softmax"
+    bottom: "predict_11"
+    top: "prob_11"
+}
+layer {
+  name: "input_12"
+  type: "ArgMax"
+  bottom: "prob_11"
+  top: "input_12"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_12"
+  type: "Embed"
+  bottom: "input_12"
+  top: "embedding_12"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_12"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden11"
+  top: "hidden_att_12"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_12"
+  type: "Tile"
+  bottom: "hidden_att_12"
+  top: "tile_hidden_att_12"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_12"
+  type: "Reshape"
+  bottom: "tile_hidden_att_12"
+  top: "tile_hidden_reshape_12"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_12"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_12"
+  top: "sum_hidden_att_12"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_12"
+  type: "TanH"
+  bottom: "sum_hidden_att_12"
+  top: "sum_hidden_att_12"
+}
+layer {
+  name: "predict_att_12"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_12"
+  top: "predict_att_12"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_12"
+  type: "Reshape"
+  bottom: "predict_att_12"
+  top: "reshape_predict_att_12"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_12"
+  type: "Softmax"
+  bottom: "reshape_predict_att_12"
+  
+  top: "att_weight_12"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_12"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_12"
+  top: "att_product_12"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_12"
+  type: "Permute"
+  bottom: "att_product_12"
+  top: "permute_att_12"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_12"
+  type: "Reduction"
+  bottom: "permute_att_12"
+  top: "context_12"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t12"
+  type: "Concat"
+  bottom: "context_12"
+  bottom: "embedding_12"
+  top: "concat1_t12"
+}
+layer {
+  name: "lstm2_t12"
+  type: "LSTMNode"
+  bottom: "concat1_t12"
+  bottom: "lstm1_mem_cell11"
+  top: "lstm1_hidden12"
+  top: "lstm1_mem_cell12"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_12"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden12"
+  top: "predict_12"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_12"
+    type: "Softmax"
+    bottom: "predict_12"
+    top: "prob_12"
+}
+layer {
+  name: "input_13"
+  type: "ArgMax"
+  bottom: "prob_12"
+  top: "input_13"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_13"
+  type: "Embed"
+  bottom: "input_13"
+  top: "embedding_13"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_13"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden12"
+  top: "hidden_att_13"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_13"
+  type: "Tile"
+  bottom: "hidden_att_13"
+  top: "tile_hidden_att_13"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_13"
+  type: "Reshape"
+  bottom: "tile_hidden_att_13"
+  top: "tile_hidden_reshape_13"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_13"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_13"
+  top: "sum_hidden_att_13"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_13"
+  type: "TanH"
+  bottom: "sum_hidden_att_13"
+  top: "sum_hidden_att_13"
+}
+layer {
+  name: "predict_att_13"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_13"
+  top: "predict_att_13"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_13"
+  type: "Reshape"
+  bottom: "predict_att_13"
+  top: "reshape_predict_att_13"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_13"
+  type: "Softmax"
+  bottom: "reshape_predict_att_13"
+  
+  top: "att_weight_13"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_13"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_13"
+  top: "att_product_13"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_13"
+  type: "Permute"
+  bottom: "att_product_13"
+  top: "permute_att_13"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_13"
+  type: "Reduction"
+  bottom: "permute_att_13"
+  top: "context_13"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t13"
+  type: "Concat"
+  bottom: "context_13"
+  bottom: "embedding_13"
+  top: "concat1_t13"
+}
+layer {
+  name: "lstm2_t13"
+  type: "LSTMNode"
+  bottom: "concat1_t13"
+  bottom: "lstm1_mem_cell12"
+  top: "lstm1_hidden13"
+  top: "lstm1_mem_cell13"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_13"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden13"
+  top: "predict_13"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_13"
+    type: "Softmax"
+    bottom: "predict_13"
+    top: "prob_13"
+}
+layer {
+  name: "input_14"
+  type: "ArgMax"
+  bottom: "prob_13"
+  top: "input_14"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_14"
+  type: "Embed"
+  bottom: "input_14"
+  top: "embedding_14"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_14"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden13"
+  top: "hidden_att_14"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_14"
+  type: "Tile"
+  bottom: "hidden_att_14"
+  top: "tile_hidden_att_14"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_14"
+  type: "Reshape"
+  bottom: "tile_hidden_att_14"
+  top: "tile_hidden_reshape_14"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_14"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_14"
+  top: "sum_hidden_att_14"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_14"
+  type: "TanH"
+  bottom: "sum_hidden_att_14"
+  top: "sum_hidden_att_14"
+}
+layer {
+  name: "predict_att_14"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_14"
+  top: "predict_att_14"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_14"
+  type: "Reshape"
+  bottom: "predict_att_14"
+  top: "reshape_predict_att_14"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_14"
+  type: "Softmax"
+  bottom: "reshape_predict_att_14"
+  
+  top: "att_weight_14"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_14"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_14"
+  top: "att_product_14"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_14"
+  type: "Permute"
+  bottom: "att_product_14"
+  top: "permute_att_14"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_14"
+  type: "Reduction"
+  bottom: "permute_att_14"
+  top: "context_14"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t14"
+  type: "Concat"
+  bottom: "context_14"
+  bottom: "embedding_14"
+  top: "concat1_t14"
+}
+layer {
+  name: "lstm2_t14"
+  type: "LSTMNode"
+  bottom: "concat1_t14"
+  bottom: "lstm1_mem_cell13"
+  top: "lstm1_hidden14"
+  top: "lstm1_mem_cell14"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_14"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden14"
+  top: "predict_14"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_14"
+    type: "Softmax"
+    bottom: "predict_14"
+    top: "prob_14"
+}
+layer {
+  name: "input_15"
+  type: "ArgMax"
+  bottom: "prob_14"
+  top: "input_15"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "embedding_15"
+  type: "Embed"
+  bottom: "input_15"
+  top: "embedding_15"
+  param {
+    name: "embed_param"
+  }
+  propagate_down: false
+  embed_param {
+    num_output: 512
+    input_dim: 6863
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "hidden_att_15"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden14"
+  top: "hidden_att_15"
+  param {
+    name: "hidden_att_param_0"
+  }
+  inner_product_param {
+    num_output: 512
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+  }
+}
+layer {
+  name: "tile_hidden_att_15"
+  type: "Tile"
+  bottom: "hidden_att_15"
+  top: "tile_hidden_att_15"
+  tile_param {
+    axis: 1
+    tiles: 48
+  }
+}
+layer {
+  name: "tile_hidden_reshape_15"
+  type: "Reshape"
+  bottom: "tile_hidden_att_15"
+  top: "tile_hidden_reshape_15"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "sum_hidden_att_15"
+  type: "Eltwise"
+  bottom: "xProj"
+  bottom: "tile_hidden_reshape_15"
+  top: "sum_hidden_att_15"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "hidden_tanh_15"
+  type: "TanH"
+  bottom: "sum_hidden_att_15"
+  top: "sum_hidden_att_15"
+}
+layer {
+  name: "predict_att_15"
+  type: "InnerProduct"
+  bottom: "sum_hidden_att_15"
+  top: "predict_att_15"
+  param {
+    name: "predict_att_param_0"
+  }
+  inner_product_param {
+    num_output: 1
+    bias_term: false
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "reshape_predict_att_15"
+  type: "Reshape"
+  bottom: "predict_att_15"
+  top: "reshape_predict_att_15"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "att_weight_15"
+  type: "Softmax"
+  bottom: "reshape_predict_att_15"
+  
+  top: "att_weight_15"
+  softmax_param {
+    engine: CAFFE
+    axis: 1
+  }
+}
+layer {
+  name: "att_product_15"
+  type: "Scale"
+  bottom: "encoder_features"
+  bottom: "att_weight_15"
+  top: "att_product_15"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "permute_att_15"
+  type: "Permute"
+  bottom: "att_product_15"
+  top: "permute_att_15"
+  permute_param {
+    order: 0
+    order: 2
+    order: 1
+  }
+}
+layer {
+  name: "context_15"
+  type: "Reduction"
+  bottom: "permute_att_15"
+  top: "context_15"
+  reduction_param {
+    axis: 2
+  }
+}
+layer {
+  name: "concat1_t15"
+  type: "Concat"
+  bottom: "context_15"
+  bottom: "embedding_15"
+  top: "concat1_t15"
+}
+layer {
+  name: "lstm2_t15"
+  type: "LSTMNode"
+  bottom: "concat1_t15"
+  bottom: "lstm1_mem_cell14"
+  top: "lstm1_hidden15"
+  top: "lstm1_mem_cell15"
+  param {
+    name: "lstm1_param_0"
+  }
+  param {
+    name: "lstm1_param_1"
+  }
+  propagate_down: true
+  propagate_down: true
+  lstmnode_param {
+    num_cells: 512
+    input_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    forget_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    output_gate_weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    input_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    input_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    forget_gate_bias_filler {
+      type: "constant"
+      value: 1.0
+    }
+    output_gate_bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "predict_15"
+  type: "InnerProduct"
+  bottom: "lstm1_hidden15"
+  top: "predict_15"
+  param {
+    name: "predict_param_0"
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    name: "predict_param_1"
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  inner_product_param {
+    num_output: 6863
+    weight_filler {
+      type: "gaussian"
+      std: 0.00999999977648
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+    axis: 1
+  }
+}
+layer {
+    name: "prob_15"
+    type: "Softmax"
+    bottom: "predict_15"
+    top: "prob_15"
+}
+layer {
+  name: "input_16"
+  type: "ArgMax"
+  bottom: "prob_15"
+  top: "input_16"
+  argmax_param {
+    axis: 1
+  }
+}
+layer {
+  name: "prob_concat"
+  type: "Concat"
+  bottom: "prob"
+  bottom: "prob_1"
+  bottom: "prob_2"
+  bottom: "prob_3"
+  bottom: "prob_4"
+  bottom: "prob_5"
+  bottom: "prob_6"
+  bottom: "prob_7"
+  bottom: "prob_8"
+  bottom: "prob_9"
+  bottom: "prob_10"
+  bottom: "prob_11"
+  bottom: "prob_12"
+  bottom: "prob_13"
+  bottom: "prob_14"
+  bottom: "prob_15"
+  top: "prob_concat"
+  concat_param {
+    concat_dim: 1
+  }
+}
+layer {
+  name: "reshape2"
+  type: "Reshape"
+  bottom: "prob_concat"
+  top: "reshape2"
+  reshape_param {
+    shape { dim: -1 dim: 6863 }
+  }
+}
