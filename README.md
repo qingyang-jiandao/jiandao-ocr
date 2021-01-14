@@ -12,16 +12,16 @@ OCR with the caffe  framework on windows and linux
 3. Download and install Python for Windows: https://www.python.org/ftp/python/3.5.2/python-3.5.2-amd64.exe
 
 4. Run command: `python synthetic_chinese_dataset\script\synthesize_data_6862.py` (to synthesize train/test data: images, annotations, segObjects)
-Note:
+**Note:**
     - Reset `args['background_image_dir']` to `coco-dataset-dir`
     - If required reset the args of `class OCRData`
 
 5. Run command: `python generate_data_list.py` (to generate files: images.list, annotations.list, segObjects.list, samples.list)
-Note:
+**Note:**
     - If required change paths: `image_dir, label_dir(annotations dir), mask_dir(segObjects dir)`
 
 6. Run command: `generate_dataset_h5.py` (to generate files: training.list, testing.list)
-Note:
+**Note:**
     - If required change paths: `imgPath, labelPath, maskPath`
     - Set param `--dataPath`. for example: `python generate_dataset_h5.py --dataPath h5_space`
 
