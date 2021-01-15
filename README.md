@@ -74,7 +74,7 @@ cp Makefile.config.example Makefile.config
 ```
 3. Build Caffe and run the tests.
 ```Shell
-make -j8 && make pycaffe
+make -j4 && make pycaffe
 ```
 
 #### Windows
