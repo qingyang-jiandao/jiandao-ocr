@@ -16,11 +16,11 @@ OCR with the caffe  framework on windows and linux
     - If required reset the args of `class OCRData`
 
 5. Run command: `python generate_data_list.py` (to generate files: images.list, annotations.list, segObjects.list, samples.list).
-    - If required change paths: `image_dir, label_dir(annotations dir), mask_dir(segObjects dir)`
+    - If required reset these paths: `image_dir=images dir, label_dir=annotations dir, mask_dir=segObjects dir`
 
 6. Run command: `generate_dataset_h5.py` (to generate files: training.list, testing.list).
     - If required change paths: `imgPath, labelPath, maskPath`
-    - Set param `--dataPath`. for example: `python generate_dataset_h5.py --dataPath h5_space`
+    - Set `--dataPath`. like this: `python generate_dataset_h5.py --dataPath h5_space`
 
 7. Start training by using `train.sh` or `train_snapshot.sh` or `python train_net.py` on linux: 
 
