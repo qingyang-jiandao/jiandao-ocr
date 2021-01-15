@@ -1,0 +1,3 @@
+[submodule "jiandao-caffe"]
+	path = jiandao-caffe
+	url = https://github.com/qingyang-jiandao/jiandao-caffe.git
