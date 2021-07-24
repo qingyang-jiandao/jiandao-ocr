@@ -1,5 +1,5 @@
 # jiandao-ocr
-OCR with the caffe  framework on windows and linux
+text recognition with the caffe  framework on windows and linux
 ## Training:
 
 1. Download The MSCOCO dataset [MSCOCO dataset](https://cocodataset.org/#download) as background image:
